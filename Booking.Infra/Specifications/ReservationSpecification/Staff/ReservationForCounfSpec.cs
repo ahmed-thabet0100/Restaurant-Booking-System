@@ -1,0 +1,27 @@
+﻿using Booking.Data.Entities;
+using Restaurant.Infra.Specifications.Bases;
+
+namespace Booking.Infra.Specifications.ReservationSpecification.Staff
+{
+    public class ReservationForCounfSpecForStaff : BaseSpecification<Reservation>
+    {
+        public ReservationForCounfSpecForStaff(ReservationSpecParamsStaff specParams, int RestauranrId)
+            : base(r =>
+                   r.RestaurantId == RestauranrId &&
+
+                (specParams.Status == null || !specParams.Status.Any()
+                    || specParams.Status.Contains(r.Status)) &&
+
+                (!specParams.Date.HasValue ||
+                (r.StartDateTime >= specParams.Date.Value.Date &&
+                r.StartDateTime < specParams.Date.Value.Date.AddDays(1))) &&
+
+                (!specParams.From.HasValue || r.StartDateTime >= specParams.From) &&
+                (!specParams.To.HasValue || r.StartDateTime <= specParams.To)
+            && (!string.IsNullOrEmpty(specParams.UserId) || r.UserId == specParams.UserId)
+                 )
+        {
+        }
+
+    }
+}
